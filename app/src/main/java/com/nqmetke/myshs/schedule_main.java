@@ -1,14 +1,20 @@
 package com.nqmetke.myshs;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
+import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.annotation.IntegerRes;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,12 +38,17 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import android.support.design.widget.FloatingActionButton;
+
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,21 +58,24 @@ import org.json.JSONObject;
 public class schedule_main extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
-    private String[] courses = new String[] {};
+
     private ArrayList<String>list = new ArrayList<String>();
-    Calendar c = Calendar.getInstance();
-    int year = c.get(Calendar.YEAR);
-    int month = c.get(Calendar.MONTH);
 
-    int day = c.get(Calendar.DAY_OF_MONTH);
-    int hour = c.get(Calendar.HOUR);
-    int minute = c.get(Calendar.MINUTE);
-    private int second = c.get(Calendar.SECOND);
     public static final String PREFS_NAME = "user_courses";
-
-
-
-
+    private String[] courses = new String[] {};
+    List<HashMap<String, String>> fillMaps = new ArrayList<HashMap<String, String>>();
+    Calendar c = null;
+    Calendar cal = Calendar.getInstance();
+    int day_name_schedule = cal.get(Calendar.DAY_OF_WEEK);
+    int year =  0;
+    int month = 0;
+    int day = 0;
+    int hour = 0;
+    int minute = 0;
+    int day_name = 0;
+    int second = 0;
+    int real_second = 0;
+    int endTimeFinal = 0;
 
 
 
@@ -69,25 +84,102 @@ public class schedule_main extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_main);
+        setTitle("mySHS");
+        Thread t = new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                c = Calendar.getInstance();
+                                year = c.get(Calendar.YEAR);
+                                month = c.get(Calendar.MONTH);
+                                day = c.get(Calendar.DAY_OF_MONTH);
+                                hour = c.get(Calendar.HOUR);
+                                minute = c.get(Calendar.MINUTE);
+                                day_name = c.get(Calendar.DAY_OF_WEEK);
+                                second = c.get(Calendar.SECOND);
+                                String val = null;
+                                int am_pm = c.get(Calendar.AM_PM);
+                                 if (am_pm == (Calendar.PM)){
+                                    hour += 12;
+                                }
 
 
 
+                                real_second = hour *60*60 + minute * 60 + second ;
+                                int endPeriod = 0;
+                                for(int i = 0;i<7;i++){
+                                    endPeriod = Integer.parseInt(fillMaps.get(i).get("raw_num"));
+                                    if(real_second < endPeriod){
+                                        break;
+                                    }
 
-        final ListView schedule = (ListView) findViewById(R.id.listView);;
+                                }
+
+                                TextView time = (TextView)findViewById(R.id.textView2);
+                                int timeLeft = endPeriod - real_second;
+                                int minLeft = timeLeft / 60;
+                                if(minLeft > 0) {
+
+                                    time.setText(Integer.toString(minLeft) + ":" + (60 - second));
+                                }
+                                else {
+                                    String text = "School is over for the day!";
+                                    time.setText(text);
+                                }
+
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+
+        t.start();
+
+
+        final ListView schedule = (ListView) findViewById(R.id.listView);
+        String[] col_value = new String[] {"col_number", "col_course", "col_time"};
+        int[] col_id = new int[] {R.id.item1, R.id.item2, R.id.item3};
+
         for (String course : courses) {
             list.add(course);
         }
 
 
 
+        final SimpleAdapter adapter = new SimpleAdapter(this, fillMaps ,R.layout.schedule_layout, col_value, col_id);
+        schedule.setAdapter(adapter);
+        schedule.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.schedule_layout, list);
-            schedule.setAdapter(adapter);
-        new JSONTask().execute("http://shstv.herokuapp.com/api/schedule/12/8/8");
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(view.getContext(), course_hw.class);
+                String course_name = (fillMaps.get(position)).get("col_course");
+                String course_num = (fillMaps.get(position)).get("col_number");
+                //String test = "Crap.";
+                intent.putExtra("course_name", course_name);
+                intent.putExtra("course_number", course_num);
+                //intent.putExtra("hashMap", fillMaps.get(position).get("col_course"));
+                startActivity(intent);
+                intent.putExtra(EXTRA_MESSAGE, position);
+
+
+            }
+        });
+        new JSONTask().execute("http://shstv.herokuapp.com/api/schedule/today");
+
+
 
     }
-    public void editClasses(View v){
 
+
+    public void editClasses(View v){
         startActivity(new Intent(schedule_main.this, EditClass.class));
     }
     public class JSONTask extends AsyncTask<String, String, String> {
@@ -101,10 +193,12 @@ public class schedule_main extends AppCompatActivity {
             try
 
             {
-                URL url = new URL(params[0]);
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-                InputStream stream = connection.getInputStream();
+                //URL url = new URL(params[0]);
+                //connection = (HttpURLConnection) url.openConnection();
+                //connection.connect();
+
+                //InputStream stream = connection.getInputStream();
+                InputStream stream = getAssets().open("mainSchedule.json");
 
                 reader = new BufferedReader(new InputStreamReader(stream));
 
@@ -147,7 +241,8 @@ public class schedule_main extends AppCompatActivity {
                 editor.putString("json", json);
                 editor.commit();
 
-                JSONArray jsonArray = new JSONArray(json);
+                JSONArray h = new JSONArray(json);
+
 
 
                 String course_1 = courses.getString("course-1", null);
@@ -158,16 +253,30 @@ public class schedule_main extends AppCompatActivity {
                 String course_6 = courses.getString("course-6", null);
                 String course_7 = courses.getString("course-7", null);
                 String course_8 = courses.getString("course-8", null);
-                TextView test = (TextView)findViewById(R.id.textView);
+                int day_number = 0;
 
+                switch(day_name_schedule) {
+                    case 2:
+                        day_number = 0;
+                        break;
+                    case 3:
+                        day_number = 1;
+                        break;
+                    case 4:
+                        day_number = 2;
+                        break;
+                    case 5:
+                        day_number = 3;
+                        break;
+                    case 6:
+                        day_number = 4;
+                        break;
+                }
+                JSONArray jsonArray = h.getJSONArray(day_number);
                 for(int i = 0;i<jsonArray.length();i++){
                     JSONObject e = jsonArray.getJSONObject(i);
                     String course_number = e.getString("name");
                     String course_name;
-
-
-
-
                     int start_time  = Integer.parseInt(e.getString("start_seconds"));
 
                     float start_time_float  = Float.parseFloat(e.getString("start_seconds"));
@@ -221,9 +330,17 @@ public class schedule_main extends AppCompatActivity {
                     }
 
 
+                    HashMap<String, String> map = new HashMap<String, String>();
+
+                    map.put("col_time", Math.round(startTime) + ((min < 10) ? ":0" : ":") + Math.round(min) + " - " + Math.round(endTime) + ((endMin < 10) ? ":0" : ":") + Math.round(endMin));
+                    map.put("col_course", course_name);
+                    map.put("col_number", e.getString("name"));
+                    map.put("raw_num", Integer.toString(end_time));
+                    fillMaps.add(map);
 
 
-                    list.add(e.getString("name") + " | " + course_name + "  |  " + Math.round(startTime) + ((min < 10) ? ":0" : ":") + Math.round(min) + " - " + Math.round(endTime) + ((endMin < 10) ? ":0" : ":") + Math.round(endMin));
+
+                    //list.add(e.getString("name") + " | " + course_name + "  |  " + Math.round(startTime) + ((min < 10) ? ":0" : ":") + Math.round(min) + " - " + Math.round(endTime) + ((endMin < 10) ? ":0" : ":") + Math.round(endMin));
 
 
                 }
@@ -237,6 +354,16 @@ public class schedule_main extends AppCompatActivity {
 
 
         }
+    }
+
+    void checkPeriod(){
+        for (int i=0; i<fillMaps.size();i++){
+            String val = (fillMaps.get(i)).get("raw_num");
+            System.out.println(val);
+
+        }
+
+
     }
 
     protected void onStop(){

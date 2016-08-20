@@ -52,10 +52,6 @@ public class EditClass extends AppCompatActivity {
     }
 
     public void goBack(View v){
-
-
-
-
         String course_1 = editText1.getText().toString();
         String course_2 = editText2.getText().toString();
         String course_3 = editText3.getText().toString();
