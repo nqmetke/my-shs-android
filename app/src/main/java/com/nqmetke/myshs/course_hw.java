@@ -18,8 +18,7 @@ public class course_hw extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_hw);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
 
         SharedPreferences hw = getSharedPreferences(PREFS_NAME, 0);
 
@@ -33,7 +32,7 @@ public class course_hw extends AppCompatActivity {
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.editClassesButton);
-        fab.setOnClickListener(new View.OnClickListener() {
+/*        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), new_hw.class);
@@ -41,8 +40,8 @@ public class course_hw extends AppCompatActivity {
                 intent.putExtra("course_name", course_name);
                 intent.putExtra("course_number", course_number);
                 startActivity(intent);
-            }
-        });
+            }*//*
+        });*/
     }
 
 }
