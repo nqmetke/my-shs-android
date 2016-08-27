@@ -100,6 +100,7 @@ public class schedule_main extends AppCompatActivity {
         final ListView schedule = (ListView) findViewById(R.id.listView);
         final String[] col_value = new String[] {"col_number", "col_course", "col_time"};
         final int[] col_id = new int[] {R.id.item1, R.id.item2, R.id.item3};
+        final TextView weekend = (TextView)findViewById(R.id.textView);
 
 
 
@@ -118,6 +119,7 @@ public class schedule_main extends AppCompatActivity {
                                     final SimpleAdapter adapter = new SimpleAdapter(schedule_main.this, fillMaps, R.layout.schedule_layout, col_value, col_id);
                                     schedule.setAdapter(adapter);
                                     hideView(progressBar);
+
                                 }
                                 prevFill = fillMaps;
 
@@ -135,26 +137,32 @@ public class schedule_main extends AppCompatActivity {
                                         hour += 12;
                                     }
 
-
-                                    real_second = hour * 60 * 60 + minute * 60 + second;
-                                    int endPeriod = 0;
-                                    for (int i = 0; i < 6; i++) {
-                                        endPeriod = Integer.parseInt(fillMaps.get(i).get("raw_num"));
-                                        if (real_second < endPeriod) {
-                                            break;
-                                        }
+                                    if(day_name == 7 || day_name == 1){
+                                        hideView(schedule);
+                                        showView(weekend);
 
                                     }
+                                else {
+                                        real_second = hour * 60 * 60 + minute * 60 + second;
+                                        int endPeriod = 0;
+                                        for (int i = 0; i < 6; i++) {
+                                            endPeriod = Integer.parseInt(fillMaps.get(i).get("raw_num"));
+                                            if (real_second < endPeriod) {
+                                                break;
+                                            }
 
-                                    TextView time = (TextView) findViewById(R.id.textView2);
-                                    int timeLeft = endPeriod - real_second;
-                                    int minLeft = timeLeft / 60;
-                                    if (minLeft > 0) {
+                                        }
 
-                                        time.setText(Integer.toString(minLeft) + ":" + (60 - second));
-                                    } else {
-                                        String text = "School is over for the day!";
-                                        time.setText(text);
+                                        TextView time = (TextView) findViewById(R.id.textView2);
+                                        int timeLeft = endPeriod - real_second;
+                                        int minLeft = timeLeft / 60;
+                                        if (minLeft > 0) {
+
+                                            time.setText(Integer.toString(minLeft) + ":" + (60 - second));
+                                        } else {
+                                            String text = "School is over for the day!";
+                                            time.setText(text);
+                                        }
                                     }
 
                             }
@@ -409,6 +417,9 @@ public class schedule_main extends AppCompatActivity {
     }
     public void hideView(View view) {
         view.setVisibility(View.GONE);
+    }
+    public void showView(View view) {
+        view.setVisibility(View.VISIBLE);
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
