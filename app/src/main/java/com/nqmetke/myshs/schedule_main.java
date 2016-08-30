@@ -91,6 +91,7 @@ public class schedule_main extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_main);
         System.out.println("Connecting...");
@@ -101,6 +102,7 @@ public class schedule_main extends AppCompatActivity {
         final String[] col_value = new String[] {"col_number", "col_course", "col_time"};
         final int[] col_id = new int[] {R.id.item1, R.id.item2, R.id.item3};
         final TextView weekend = (TextView)findViewById(R.id.textView);
+        hideView(weekend);
 
 
 
@@ -114,6 +116,7 @@ public class schedule_main extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+
                                 ProgressBar progressBar = (ProgressBar) findViewById(R.id.loadingSchedule);
                                 if (fillMaps != prevFill) {
                                     final SimpleAdapter adapter = new SimpleAdapter(schedule_main.this, fillMaps, R.layout.schedule_layout, col_value, col_id);
@@ -143,22 +146,40 @@ public class schedule_main extends AppCompatActivity {
 
                                     }
                                 else {
+
                                         real_second = hour * 60 * 60 + minute * 60 + second;
                                         int endPeriod = 0;
-                                        for (int i = 0; i < 6; i++) {
-                                            endPeriod = Integer.parseInt(fillMaps.get(i).get("raw_num"));
-                                            if (real_second < endPeriod) {
+                                        int startPeriod = 0;
+                                        int class_num;
+                                        if(day_name == 2 || day_name == 3 || day_name == 4 || day_name == 5){
+                                            class_num = 6;
+
+                                        }
+                                        else{
+                                            class_num = 7;
+                                        }
+                                        for (int i = 0; i < class_num; i++) {
+                                            endPeriod = Integer.parseInt(fillMaps.get(i).get("raw_end"));
+                                            startPeriod = Integer.parseInt(fillMaps.get(i).get("raw_start"));
+                                            if (real_second < endPeriod && real_second > startPeriod) {
                                                 break;
                                             }
 
                                         }
+                                        //Calculating Percentage
+                                        float percEnd = endPeriod - startPeriod;
+                                        float percReal = real_second - startPeriod;
+
+                                        float percDec = percReal / percEnd;
+                                        float perc = percDec * 100;
+                                        int percFinal = Math.round(perc);
 
                                         TextView time = (TextView) findViewById(R.id.textView2);
                                         int timeLeft = endPeriod - real_second;
                                         int minLeft = timeLeft / 60;
                                         if (minLeft > 0) {
 
-                                            time.setText(Integer.toString(minLeft) + ":" + (60 - second));
+                                            time.setText(Integer.toString(minLeft) + ":" + (60 - second) + "|" + percFinal + "%");
                                         } else {
                                             String text = "School is over for the day!";
                                             time.setText(text);
@@ -379,7 +400,8 @@ public class schedule_main extends AppCompatActivity {
                     //map.put("col_course", "course_name");
                     map.put("col_number", e.getString("name"));
                     // map.put("col_number", "col_number");
-                    map.put("raw_num", Integer.toString(end_time));
+                    map.put("raw_end", Integer.toString(end_time));
+                    map.put("raw_start", Integer.toString(start_time));
                     fillMaps.add(map);
 
 

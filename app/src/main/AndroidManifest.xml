@@ -34,7 +34,11 @@
             android:name=".course_hw"
             android:label="@string/title_activity_course_hw"
             android:theme="@style/AppTheme" />
-        <activity android:name=".new_hw"></activity>
+        <activity android:name=".new_hw" />
+        <activity
+            android:name=".test"
+            android:label="@string/title_activity_test"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
