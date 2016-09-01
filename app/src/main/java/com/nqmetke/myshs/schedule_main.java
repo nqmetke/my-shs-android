@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -95,7 +96,7 @@ public class schedule_main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_main);
         System.out.println("Connecting...");
-        setTitle("mySHS");
+
 
         new JSONTask().execute("http://shstv.herokuapp.com/api/schedule/today");
         final ListView schedule = (ListView) findViewById(R.id.listView);
@@ -121,7 +122,7 @@ public class schedule_main extends AppCompatActivity {
                                 if (fillMaps != prevFill) {
                                     final SimpleAdapter adapter = new SimpleAdapter(schedule_main.this, fillMaps, R.layout.schedule_layout, col_value, col_id);
                                     schedule.setAdapter(adapter);
-                                    hideView(progressBar);
+                                    /*hideView(progressBar);*/
 
                                 }
                                 prevFill = fillMaps;
@@ -178,9 +179,11 @@ public class schedule_main extends AppCompatActivity {
                                         int timeLeft = endPeriod - real_second;
                                         int minLeft = timeLeft / 60;
                                         if (minLeft > 0) {
+                                            setTitle(Integer.toString(minLeft) + ":" + (60 - second) + " | " + percFinal + "% left");
 
-                                            time.setText(Integer.toString(minLeft) + ":" + (60 - second) + "|" + percFinal + "%");
+                                            time.setText(Integer.toString(minLeft) + ":" + (60 - second) + " | " + percFinal + "%");
                                         } else {
+                                            setTitle("School is over for the day!");
                                             String text = "School is over for the day!";
                                             time.setText(text);
                                         }
@@ -222,6 +225,9 @@ public class schedule_main extends AppCompatActivity {
 
 
 
+    }
+    public void moreInfo(){
+        startActivity(new Intent(schedule_main.this, EditClass.class));
     }
 
 
@@ -447,6 +453,16 @@ public class schedule_main extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.miCompose:
+                startActivity(new Intent(schedule_main.this, info.class));
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
 

@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:text="Submit"
         android:id="@+id/submit"
-        android:onClick="saveHw"
+        android:onClick="saveHomework"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
 
