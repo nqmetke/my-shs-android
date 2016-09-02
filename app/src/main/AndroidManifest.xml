@@ -39,7 +39,11 @@
             android:name=".test"
             android:label="@string/title_activity_test"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".info"></activity>
+        <activity android:name=".info" />
+        <activity
+            android:name=".timer_main"
+            android:label="@string/title_activity_timer_main"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
