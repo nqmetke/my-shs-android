@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,62 +22,53 @@ public class new_hw extends AppCompatActivity {
     String course_number= null;
     EditText hwTitle;
     EditText hwDescription;
+    Button submitBtn;
     String FILENAME = "homework";
+    DatabaseHelper db;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_hw);
+        db = new DatabaseHelper(this);
         Intent intent = getIntent();
          course_name = intent.getExtras().getString("course_name");
          course_number = intent.getExtras().getString("course_number");
-        FileOutputStream fos = null;
-        FileInputStream ofi = null;
         hwTitle = (EditText)findViewById(R.id.hwTitle);
         hwDescription = (EditText)findViewById(R.id.hwDescription);
-        //Setting up the inputs
+        submitBtn = (Button)findViewById(R.id.submit);
+        saveHomework();
 
-        try {
-            ofi = openFileInput(FILENAME);
-            hwTitle.setText(ofi.read());
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
 
 
 
 
     }
-    void saveHomework(){
-        ArrayList<String> homeworkContent = new ArrayList<String>();
+    public void saveHomework() {
+        submitBtn.setOnClickListener(
+                new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v){
+                        boolean isInserted = db.insertData(course_number, hwTitle.getText().toString(), hwDescription.getText().toString());
+
+                        if (isInserted){
+                            Toast.makeText(new_hw.this, "Homework Added!", Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            Toast.makeText(new_hw.this, "Uh-Oh! That clearly didn't work!   " + hwTitle.getText().toString(), Toast.LENGTH_LONG).show();
+
+                        }
+
+                    }
+
+                }
 
 
-        FileOutputStream fos = null;
-        try {
-            fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-            homeworkContent.add(1, course_number);
-            homeworkContent.add(1, hwTitle.getText().toString());
-            homeworkContent.add(1, hwDescription.getText().toString());
-        for(String s: homeworkContent) {
-            fos.write(s.getBytes());
-        }
-        fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-   /*     editor.putString("class-number", course_number);
-        editor.putString("hw-title", hwTitle.getText().toString());
-        editor.putString("hw-description", hwDescription.getText().toString());
-        editor.apply();*/
-
-
+        );
 
     }
 
