@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "49866607737",
+    "firebase_url": "https://staples-scheduler.firebaseio.com",
+    "project_id": "staples-scheduler",
+    "storage_bucket": "staples-scheduler.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:49866607737:android:5f30eca7aec90c54",
+        "android_client_info": {
+          "package_name": "com.nqmetke.myshs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "49866607737-lbgvp3l3iaelb3ra6sli83mmrer296fn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nqmetke.myshs",
+            "certificate_hash": "98D0F65ABD0DB9C6165142D721FF5CC01CCA5BA8"
+          }
+        },
+        {
+          "client_id": "49866607737-i96hhvejqs95nv0pvechqe6lqd9fbsj2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMo7OOpGzvIV75fI5zAbaps9BZHRBM13U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "49866607737-i96hhvejqs95nv0pvechqe6lqd9fbsj2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

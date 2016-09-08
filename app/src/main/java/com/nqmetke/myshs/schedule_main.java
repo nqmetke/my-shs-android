@@ -228,12 +228,12 @@ public class schedule_main extends AppCompatActivity {
 
     }
     public void moreInfo(){
-        startActivity(new Intent(schedule_main.this, EditClass.class));
+        startActivity(new Intent(schedule_main.this, login_activity.class));
     }
 
 
     public void editClasses(View v){
-        startActivity(new Intent(schedule_main.this, EditClass.class));
+        startActivity(new Intent(schedule_main.this, login_activity.class));
     }
     public class JSONTask extends AsyncTask<String, String, String> {
         SharedPreferences courses = getSharedPreferences(PREFS_NAME, 0);

@@ -20,30 +20,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".login_activity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait">
+
+        </activity>
         <activity
             android:name=".EditClass"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".course_hw"
             android:label="@string/title_activity_course_hw"
             android:theme="@style/AppTheme" />
         <activity android:name=".new_hw" />
         <activity
-            android:name=".test"
-            android:label="@string/title_activity_test"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".info" />
-        <activity
             android:name=".timer_main"
             android:label="@string/title_activity_timer_main"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+
     </application>
 
 </manifest>

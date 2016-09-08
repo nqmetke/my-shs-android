@@ -24,7 +24,7 @@ public class new_hw extends AppCompatActivity {
     EditText hwDescription;
     Button submitBtn;
     String FILENAME = "homework";
-    DatabaseHelper db;
+    //DatabaseHelper db;
 
 
 
@@ -33,7 +33,7 @@ public class new_hw extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_hw);
-        db = new DatabaseHelper(this);
+       // db = new DatabaseHelper(this);
         Intent intent = getIntent();
          course_name = intent.getExtras().getString("course_name");
          course_number = intent.getExtras().getString("course_number");
@@ -49,29 +49,9 @@ public class new_hw extends AppCompatActivity {
 
     }
     public void saveHomework() {
-        submitBtn.setOnClickListener(
-                new View.OnClickListener(){
-                    @Override
-                    public void onClick(View v){
-                        boolean isInserted = db.insertData(course_number, hwTitle.getText().toString(), hwDescription.getText().toString());
-
-                        if (isInserted){
-                            Toast.makeText(new_hw.this, "Homework Added!", Toast.LENGTH_LONG).show();
-                        }
-                        else{
-                            Toast.makeText(new_hw.this, "Uh-Oh! That clearly didn't work!   " + hwTitle.getText().toString(), Toast.LENGTH_LONG).show();
-
-                        }
-
-                    }
-
-                }
-
-
-        );
-
-    }
 
 
 
+
+}
 }
